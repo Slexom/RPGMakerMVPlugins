@@ -431,13 +431,6 @@ Scene_Shop.prototype.onCustomCategoryCancel = function() {
     this._categoryWindow.show();
 };
 
-Scene_Shop.prototype.onCategoryCancel = function() {
-    this._commandWindow.activate();
-    this._dummyWindow.show();
-    this._categoryWindow.hide();
-    this._sellWindow.hide();
-};
-
 MSX.InventoryCategories.Scene_Shop_createSellWindow = Scene_Shop.prototype.createSellWindow;
 Scene_Shop.prototype.createSellWindow = function() {
     MSX.InventoryCategories.Scene_Shop_createSellWindow.call(this);
