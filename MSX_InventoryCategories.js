@@ -91,8 +91,9 @@ MSX.InventoryCategories = MSX.InventoryCategories || {};
  * Changelog
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
  *
- * v1.1 Add -> Weapon and Armor categorization;
+ * v1.1 Add -> Weapon and Armor categorization.
  *             Enable/Disable two-level menu.
+ *             Show/Hide default categories.
  *
  * v1.0 Initial release.
  */
