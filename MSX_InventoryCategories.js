@@ -1,8 +1,8 @@
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 // MSX Inventory Categories
-// Version: 1.1.0
+// Version: 1.1.1
 // Author: Melosx
-// Last Update: October 15th, 2016  17:32pm
+// Last Update: October 16th, 2016  09:03
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 
 var Imported = Imported || {};
@@ -12,7 +12,7 @@ var MSX = MSX || {};
 MSX.InventoryCategories = MSX.InventoryCategories || {};
 
  /*:
- * @plugindesc v1.10 Add new categories to inventory
+ * @plugindesc v1.1.1 Add new categories to inventory
  * @author Melosx
  *
  * @param Two-Level Menu
@@ -91,9 +91,12 @@ MSX.InventoryCategories = MSX.InventoryCategories || {};
  * Changelog
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
  *
- * v1.1 Add -> Weapon and Armor categorization.
- *             Enable/Disable two-level menu.
- *             Show/Hide default categories.
+ * v1.1.1 Fix -> Game freeze caused by onItemCancel function.
+ *               Actor window now appear correctly over other windows.
+ *
+ * v1.1   Add -> Weapon and Armor categorization.
+ *               Enable/Disable two-level menu.
+ *               Show/Hide default categories.
  *
  * v1.0 Initial release.
  */
@@ -236,6 +239,7 @@ MSX.InventoryCategories.Scene_Item_create = Scene_Item.prototype.create;
  Scene_Item.prototype.create = function() {
 	MSX.InventoryCategories.Scene_Item_create.call(this);
     this.createCustomCategoriesWindow();
+    this.createActorWindow();
 };
 
 Scene_Item.prototype.createCustomCategoriesWindow = function() {
@@ -329,13 +333,13 @@ Scene_Item.prototype.onCustomCategoryCancel = function() {
 Scene_Item.prototype.onItemCancel = function() {
     this._itemWindow.deselect();
 	switch(this._categoryWindow.currentSymbol()){
-		case 'item':
+		case 'tlm_item':
 			this._customItemCategoryWindow.activate();
 			break;
-		case 'weapon':
+		case 'tlm_weapon':
 			this._customWeaponCategoryWindow.activate();
 			break;
-		case 'armor':
+		case 'tlm_armor':
 			this._customArmorCategoryWindow.activate();
 			break;
 	};
@@ -438,22 +442,3 @@ Scene_Shop.prototype.createSellWindow = function() {
 };
  
 }
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
