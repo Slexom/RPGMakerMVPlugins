@@ -1,6 +1,6 @@
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 // MSX Inventory Categories
-// Version: 1.1.1
+// Version: 1.1.2
 // Author: Melosx
 // Last Update: October 16th, 2016  09:03
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
@@ -12,7 +12,7 @@ var MSX = MSX || {};
 MSX.InventoryCategories = MSX.InventoryCategories || {};
 
  /*:
- * @plugindesc v1.1.1 Add new categories to inventory
+ * @plugindesc v1.1.2 Add new categories to inventory
  * @author Melosx
  *
  * @param Two-Level Menu
@@ -90,6 +90,8 @@ MSX.InventoryCategories = MSX.InventoryCategories || {};
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
  * Changelog
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+ *
+ * v1.1.2 Fix -> Game freeze caused by onSellCancel function.
  *
  * v1.1.1 Fix -> Game freeze caused by onItemCancel function.
  *               Actor window now appear correctly over other windows.
@@ -418,6 +420,23 @@ Scene_Shop.prototype.onCategoryOk = function() {
 Scene_Shop.prototype.onCustomCategoryOk = function() {
     this.activateSellWindow();
     this._sellWindow.select(0);
+};
+
+Scene_Shop.prototype.onSellCancel = function() {
+    this._sellWindow.deselect();
+	switch(this._categoryWindow.currentSymbol()){
+		case 'tlm_item':
+			this._customItemCategoryWindow.activate();
+			break;
+		case 'tlm_weapon':
+			this._customWeaponCategoryWindow.activate();
+			break;
+		case 'tlm_armor':
+			this._customArmorCategoryWindow.activate();
+			break;
+	};
+    this._statusWindow.setItem(null);
+    this._helpWindow.clear();
 };
 
 Scene_Shop.prototype.onCustomCategoryCancel = function() {
