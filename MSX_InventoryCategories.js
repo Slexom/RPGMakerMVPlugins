@@ -1,8 +1,8 @@
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 // MSX Inventory Categories
-// Version: 1.1.2
+// Version: 1.2
 // Author: Melosx
-// Last Update: October 16th, 2016  09:03
+// Last Update: November 8th, 2016  08:16
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 
 var Imported = Imported || {};
@@ -12,14 +12,14 @@ var MSX = MSX || {};
 MSX.InventoryCategories = MSX.InventoryCategories || {};
 
  /*:
- * @plugindesc v1.1.2 Add new categories to inventory
+ * @plugindesc v1.2 Add new categories to inventory
  * @author Melosx
  *
  * @param Two-Level Menu
  * @desc Enable(true) or Disable(false) the new Item category menu.
  * true -> ENABLE      false -> DISABLE
  * @default true
- 
+
  * @param Show/Hide Default Categories
  * @desc Show/Hide defaults categories excluding Key Item Category.
  * true -> SHOW        false -> HIDE
@@ -27,20 +27,19 @@ MSX.InventoryCategories = MSX.InventoryCategories || {};
  *
  * @param Item Categories
  * @desc This is the order in which the categories will appear. Use
- * a space to separate the each category.
- * @default Potions Cures PowerUps
+ * a comma to separate the each category.
+ * @default Potions & Cures,PowerUps
  *
  * @param Weapon Categories
  * @desc This is the order in which the categories will appear. Use
- * a space to separate the each category.
- * @default Swords Maces Wands
+ * a comma to separate the each category.
+ * @default Swords,Maces,Wands
  *
  * @param Armor Categories
  * @desc This is the order in which the categories will appear. Use
- * a space to separate the each category.
- * @default Shields Head Body
+ * a comma to separate the each category.
+ * @default Shields,Head,Body
  *
- 
  * @help
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
  * Introduction
@@ -52,24 +51,24 @@ MSX.InventoryCategories = MSX.InventoryCategories || {};
  * Parameters
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
  * Two-Level Menu
- * 
- * Add a new layer in the Item Menu. 
- * - Default Items command now contain the list of all categories 
+ *
+ * Add a new layer in the Item Menu.
+ * - Default Items command now contain the list of all categories
  *   related to Items.
- * - Default Weapons command now contain the list of all categories 
+ * - Default Weapons command now contain the list of all categories
  *   related to Weapons.
- * - Default Armors command now contain the list of all categories 
+ * - Default Armors command now contain the list of all categories
  *   related to Armors.
- * - Key Item command is now inside Item categories list, at the 
+ * - Key Item command is now inside Item categories list, at the
  *   end.
  *
  *
  * Show/Hide Default Categories
  *
  * - Default categories Items, Weapons, Armors can now be hidden.
- * - Default category Key Items is is always shown, at the end of 
+ * - Default category Key Items is is always shown, at the end of
  *   all categories.
- * 
+ *
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
  * !!IMPORTANT NOTES!!
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
@@ -91,6 +90,9 @@ MSX.InventoryCategories = MSX.InventoryCategories || {};
  * Changelog
  * #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
  *
+ * v1.2   Add -> Change the way the categories are read by the plugin.
+ *               Can now have category names with more than one word.
+ *
  * v1.1.2 Fix -> Game freeze caused by onSellCancel function.
  *
  * v1.1.1 Fix -> Game freeze caused by onItemCancel function.
@@ -110,8 +112,8 @@ MSX.InventoryCategories.DefaultCategories = String(params["Disable Default Categ
 MSX.InventoryCategories.ItemCategories = String(params["Item Categories"]);
 MSX.InventoryCategories.WeaponCategories = String(params["Weapon Categories"]);
 MSX.InventoryCategories.ArmorCategories = String(params["Armor Categories"]);
- 
- 
+
+
 MSX.InventoryCategories.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
 DataManager.isDatabaseLoaded = function() {
   if (!MSX.InventoryCategories.DataManager_isDatabaseLoaded.call(this)) return false;
@@ -120,7 +122,7 @@ DataManager.isDatabaseLoaded = function() {
   this.setItemCategory($dataArmors);
   return true;
 };
- 
+
 DataManager.setItemCategory = function(items) {
 	for(var n = 1; n < items.length; n++){
 		var itm = items[n];
@@ -130,15 +132,15 @@ DataManager.setItemCategory = function(items) {
 			var line = notedata[i];
 			if (line.match(/<(?:Category):[ ](.*)>/i)) {
 				itm.customCategory = String(RegExp.$1).toLowerCase();
-			} 
+			}
 		}
 	}
 };
- 
+
 Window_ItemCategory.prototype.makeCommandList = function() {
-	this._itemCategories = MSX.InventoryCategories.ItemCategories.split(' ');
-	this._weaponCategories = MSX.InventoryCategories.WeaponCategories.split(' ');
-	this._armorCategories = MSX.InventoryCategories.ArmorCategories.split(' ');
+	this._itemCategories = MSX.InventoryCategories.ItemCategories.split(',');
+	this._weaponCategories = MSX.InventoryCategories.WeaponCategories.split(',');
+	this._armorCategories = MSX.InventoryCategories.ArmorCategories.split(',');
 	if(eval(MSX.InventoryCategories.DefaultCategories)){
 		this.addCommand(TextManager.item,    'item');
 		this.addCommand(TextManager.weapon,  'weapon');
@@ -162,9 +164,9 @@ Window_ItemCategory.prototype.makeCommandList = function() {
 		this.addCommand(TextManager.keyItem, 'keyItem');
 	}
 };
- 
+
 MSX.InventoryCategories.Window_itemList_includes = Window_ItemList.prototype.includes;
-Window_ItemList.prototype.includes = function(item) {     
+Window_ItemList.prototype.includes = function(item) {
 	if (item === null) {
 		return false;
 	}
@@ -176,11 +178,11 @@ Window_ItemList.prototype.includes = function(item) {
 		if(DataManager.isWeapon(item))
 			return DataManager.isWeapon(item) && item.customCategory === this._category;
 		if(DataManager.isArmor(item))
-			return DataManager.isArmor(item) && item.customCategory === this._category;		
-	}	
+			return DataManager.isArmor(item) && item.customCategory === this._category;
+	}
 	return false;
 };
- 
+
 if(eval(MSX.InventoryCategories.TwoLevelMenu)){
 
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
@@ -194,10 +196,11 @@ Window_CustomItemCategory.prototype = Object.create(Window_ItemCategory.prototyp
 Window_CustomItemCategory.prototype.constructor = Window_CustomItemCategory;
 
 Window_CustomItemCategory.prototype.makeCommandList = function() {
-	this._itemCategories = MSX.InventoryCategories.ItemCategories.split(' ');
+	this._itemCategories = MSX.InventoryCategories.ItemCategories.split(',');
 	for (var i = 0; i < this._itemCategories.length; ++i) {
 		this.addCommand(this._itemCategories[i], this._itemCategories[i].toLowerCase());
 	}
+
     this.addCommand(TextManager.keyItem, 'keyItem');
 };
 
@@ -212,11 +215,12 @@ Window_CustomWeaponCategory.prototype = Object.create(Window_ItemCategory.protot
 Window_CustomWeaponCategory.prototype.constructor = Window_CustomWeaponCategory;
 
 Window_CustomWeaponCategory.prototype.makeCommandList = function() {
-	this._weaponCategories = MSX.InventoryCategories.WeaponCategories.split(' ');
+	this._weaponCategories = MSX.InventoryCategories.WeaponCategories.split(',');
 	for (var i = 0; i < this._weaponCategories.length; ++i) {
 		this.addCommand(this._weaponCategories[i], this._weaponCategories[i].toLowerCase());
 	}
 };
+
 
 //#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 // CustomArmorCategory Window
@@ -229,14 +233,15 @@ Window_CustomArmorCategory.prototype = Object.create(Window_ItemCategory.prototy
 Window_CustomArmorCategory.prototype.constructor = Window_CustomArmorCategory;
 
 Window_CustomArmorCategory.prototype.makeCommandList = function() {
-	this._armorCategories = MSX.InventoryCategories.ArmorCategories.split(' ');
+	this._armorCategories = MSX.InventoryCategories.ArmorCategories.split(',');
 	for (var i = 0; i < this._armorCategories.length; ++i) {
 		this.addCommand(this._armorCategories[i], this._armorCategories[i].toLowerCase());
 	}
 };
 
-// MENU MODIFICATIONS
-
+//#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+// Menu Mod
+//#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 MSX.InventoryCategories.Scene_Item_create = Scene_Item.prototype.create;
  Scene_Item.prototype.create = function() {
 	MSX.InventoryCategories.Scene_Item_create.call(this);
@@ -251,11 +256,11 @@ Scene_Item.prototype.createCustomCategoriesWindow = function() {
 };
 
 Scene_Item.prototype.createCustomItemCategoryWindow = function() {
-    this._customItemCategoryWindow = new Window_CustomItemCategory();	
+    this._customItemCategoryWindow = new Window_CustomItemCategory();
     this._customItemCategoryWindow.setHelpWindow(this._helpWindow);
     this._customItemCategoryWindow.y = this._helpWindow.height;
 	this._customItemCategoryWindow.hide();
-	this._customItemCategoryWindow.deactivate();	
+	this._customItemCategoryWindow.deactivate();
     this._customItemCategoryWindow.setHandler('ok',     this.onCustomCategoryOk.bind(this));
     this._customItemCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));
     this.addWindow(this._customItemCategoryWindow);
@@ -266,7 +271,7 @@ Scene_Item.prototype.createCustomWeaponCategoryWindow = function() {
     this._customWeaponCategoryWindow.setHelpWindow(this._helpWindow);
     this._customWeaponCategoryWindow.y = this._helpWindow.height;
 	this._customWeaponCategoryWindow.hide();
-	this._customWeaponCategoryWindow.deactivate();	
+	this._customWeaponCategoryWindow.deactivate();
     this._customWeaponCategoryWindow.setHandler('ok',     this.onCustomCategoryOk.bind(this));
     this._customWeaponCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));
     this.addWindow(this._customWeaponCategoryWindow);
@@ -277,13 +282,13 @@ Scene_Item.prototype.createCustomArmorCategoryWindow = function() {
     this._customArmorCategoryWindow.setHelpWindow(this._helpWindow);
     this._customArmorCategoryWindow.y = this._helpWindow.height;
 	this._customArmorCategoryWindow.hide();
-	this._customArmorCategoryWindow.deactivate();	
+	this._customArmorCategoryWindow.deactivate();
     this._customArmorCategoryWindow.setHandler('ok',     this.onCustomCategoryOk.bind(this));
-    this._customArmorCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));	
+    this._customArmorCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));
     this.addWindow(this._customArmorCategoryWindow);
 };
- 
-MSX.InventoryCategories.Scene_Item_createItemWindow = Scene_Item.prototype.createItemWindow; 
+
+MSX.InventoryCategories.Scene_Item_createItemWindow = Scene_Item.prototype.createItemWindow;
 Scene_Item.prototype.createItemWindow = function() {
 	MSX.InventoryCategories.Scene_Item_createItemWindow.call(this);
     this._categoryWindow.setItemWindow();
@@ -311,7 +316,7 @@ Scene_Item.prototype.onCategoryOk = function() {
 	};
 	this._itemWindow.refresh();
 };
- 
+
 Scene_Item.prototype.onCustomCategoryOk = function() {
     this._itemWindow.activate();
     this._itemWindow.selectLast();
@@ -346,9 +351,10 @@ Scene_Item.prototype.onItemCancel = function() {
 			break;
 	};
 };
- 
-// SHOP MODIFICATIONS
 
+//#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
+// Shop Mod
+//#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#
 MSX.InventoryCategories.Scene_Shop_create = Scene_Shop.prototype.create;
  Scene_Shop.prototype.create = function() {
 	MSX.InventoryCategories.Scene_Shop_create.call(this);
@@ -362,11 +368,12 @@ Scene_Shop.prototype.createCustomCategoriesWindow = function() {
 };
 
 Scene_Shop.prototype.createCustomItemCategoryWindow = function() {
-    this._customItemCategoryWindow = new Window_CustomItemCategory();	
+    this._customItemCategoryWindow = new Window_CustomItemCategory();
     this._customItemCategoryWindow.setHelpWindow(this._helpWindow);
     this._customItemCategoryWindow.y = this._dummyWindow.y;
+
 	this._customItemCategoryWindow.hide();
-	this._customItemCategoryWindow.deactivate();	
+	this._customItemCategoryWindow.deactivate();
     this._customItemCategoryWindow.setHandler('ok',     this.onCustomCategoryOk.bind(this));
     this._customItemCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));
     this.addWindow(this._customItemCategoryWindow);
@@ -377,7 +384,7 @@ Scene_Shop.prototype.createCustomWeaponCategoryWindow = function() {
     this._customWeaponCategoryWindow.setHelpWindow(this._helpWindow);
     this._customWeaponCategoryWindow.y = this._dummyWindow.y;
 	this._customWeaponCategoryWindow.hide();
-	this._customWeaponCategoryWindow.deactivate();	
+	this._customWeaponCategoryWindow.deactivate();
     this._customWeaponCategoryWindow.setHandler('ok',     this.onCustomCategoryOk.bind(this));
     this._customWeaponCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));
     this.addWindow(this._customWeaponCategoryWindow);
@@ -388,12 +395,12 @@ Scene_Shop.prototype.createCustomArmorCategoryWindow = function() {
     this._customArmorCategoryWindow.setHelpWindow(this._helpWindow);
     this._customArmorCategoryWindow.y = this._dummyWindow.y;
 	this._customArmorCategoryWindow.hide();
-	this._customArmorCategoryWindow.deactivate();	
+	this._customArmorCategoryWindow.deactivate();
     this._customArmorCategoryWindow.setHandler('ok',     this.onCustomCategoryOk.bind(this));
-    this._customArmorCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));	
+    this._customArmorCategoryWindow.setHandler('cancel', this.onCustomCategoryCancel.bind(this));
     this.addWindow(this._customArmorCategoryWindow);
 };
- 
+
 Scene_Shop.prototype.onCategoryOk = function() {
    this._categoryWindow.hide();
 	this._categoryWindow.deactivate();
@@ -413,9 +420,9 @@ Scene_Shop.prototype.onCategoryOk = function() {
 			this._customArmorCategoryWindow.activate();
 			this._customArmorCategoryWindow.show();
 			break;
-	};
+	}
 	this._sellWindow.refresh();
-}; 
+};
 
 Scene_Shop.prototype.onCustomCategoryOk = function() {
     this.activateSellWindow();
@@ -459,5 +466,8 @@ Scene_Shop.prototype.createSellWindow = function() {
     MSX.InventoryCategories.Scene_Shop_createSellWindow.call(this);
     this._categoryWindow.setItemWindow();
 };
- 
+
 }
+
+
+
